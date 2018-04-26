@@ -87,57 +87,37 @@ module.exports = class SkillGarbageCollection {
                             text: `${context.confirmed.name}, Sounds great.`
                         },{
                             type: "text",
-                            text: `Not bad.`
+                            text: `Hum. Not bad.`
                         }]));
                     }
 
                     return resolve();
                 }
             },
-            zip_code: {
+            address: {
                 message_to_confirm: {
                     type: "text",
-                    text: "Next, I would like to know where should we go to pick up the garbage. Can I have your zip code please?"
+                    text: "Next, I would like to know where should we go to pick up the garbage."
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
                     if (value === "") return reject();
-                    if (typeof value != "string") return reject();
-                    parse.zip_code(value, resolve, reject);
+
+                    if (typeof value === "string"){
+                        return resolve(value);
+                    }
+
+                    if (typeof value === "object"){
+                        if (value.address) return resolve(value);
+                    }
+                    return reject();
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
-                    if (error){
-                        if (error.message == "zip code format is incorrect."){
-                            // Provide zip code is incorrect.
-                            bot.change_message_to_confirm("zip_code", {
-                                type: "text",
-                                text: "The zip code seems incorrect. Could you make sure if it is correct?"
-                            });
-                            return resolve();
-                        } else {
-                            // While provided zip code is correct, zip code search is not working.
-                            bot.queue({
-                                type: "text",
-                                text: "Sorry, our search system looks out of order."
-                            });
-                            bot.collect("address");
-                            return resolve();
-                        }
-                    }
+                    if (error) return resolve();
 
-                    if (!value.resolved_address){
-                        // While provided zip code seems correct, we could not find the address.
-                        bot.queue({
-                            type: "text",
-                            text: "Sorry, I could not find the corresponding address."
-                        });
-                        bot.collect("address");
-                        return resolve();
-                    }
-
-                    // It seems we could find the corresponding address.
-                    // Set resolved address as city.
-                    context.confirmed.city = context.confirmed.zip_code.resolved_address;
-                    bot.collect("is_city_correct");
+                    bot.queue({
+                        type: "text",
+                        text: `All right, we'll go and pick up at ${value}.`
+                    })
                     return resolve();
                 }
             },
