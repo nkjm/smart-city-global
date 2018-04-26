@@ -55,7 +55,7 @@ module.exports = class SkillGarbageCollection {
             name: {
                 message_to_confirm: {
                     type: "text",
-                    text: "Can I have you name please?"
+                    text: "Can I have your name please?"
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
                     if (error) return resolve();
