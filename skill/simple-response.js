@@ -25,7 +25,11 @@ module.exports = class SkillSimpleResponse {
             }
         } else {
             debug("Fulfillment not found so we do nothing.");
-            return resolve();
+            message = {
+                type: "sticker",
+                packageId: "2",
+                stickerId: "149"
+            }
         }
         return bot.reply(message).then((response) => {
             return resolve();
