@@ -242,7 +242,7 @@ module.exports = class SkillGarbageCollection {
                         text: `How would you like to pay for the fee?`,
                         actions: [
                             {type: "message", label: "LINE Pay", text: "LINE Pay"},
-                            {type: "message", label: "At grocery Store", text: "Grocery Store"}
+                            {type: "message", label: "At Grocery Store", text: "Grocery Store"}
                         ]
                     }
                 },
