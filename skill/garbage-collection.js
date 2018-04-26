@@ -14,6 +14,8 @@ module.exports = class SkillGarbageCollection {
                     text: `Sure. Could you tell me what you like to dispose?`
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
+                    if (value === "") return reject();
+                    if (typeof value != "string") return reject();
                     parse.by_nlu(context.sender_language, "parse_garbage", value, resolve, reject);
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
@@ -73,6 +75,8 @@ module.exports = class SkillGarbageCollection {
                     text: "Next, I would like to know where should we go to pick up the garbage. Can I have your zip code please?"
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
+                    if (value === "") return reject();
+                    if (typeof value != "string") return reject();
                     parse.zip_code(value, resolve, reject);
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
@@ -169,6 +173,8 @@ module.exports = class SkillGarbageCollection {
                     });
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
+                    if (value === "") return reject();
+                    if (typeof value != "string") return reject();
                     parse.by_nlu(context.sender_language, "parse_yes_no", value, resolve, reject);
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
@@ -216,6 +222,8 @@ module.exports = class SkillGarbageCollection {
                     }
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
+                    if (value === "") return reject();
+                    if (typeof value != "string") return reject();
                     parse.by_nlu_with_list(context.sender_language, "parse_payment", value, ["LINE Pay", "Grocery Store"], resolve, reject);
                 }
             }
