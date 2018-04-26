@@ -3,6 +3,7 @@
 const debug = require('debug')('bot-express:skill');
 const line_event = require("../service/line-event");
 const parse = require("../service/parser");
+const msg = require("../service/message");
 
 module.exports = class SkillGarbageCollection {
 
@@ -59,13 +60,30 @@ module.exports = class SkillGarbageCollection {
                     type: "text",
                     text: "Can I have your name please?"
                 },
+                parser: (value, bot, event, context, resolve, reject) => {
+                    if (value === "") return reject();
+                    if (typeof value != "string") return reject();
+
+                    return resolve();
+                },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
                     if (error) return resolve();
 
-                    bot.queue({
-                        type: "text",
-                        text: `${context.confirmed.name}!! What an exciting name you have!`
-                    })
+                    if (value.match(/macho/i)){
+                        bot.queue({
+                            type: "text",
+                            text: `${context.confirmed.name}!! What an exciting name you have!!`
+                        })
+                    } else {
+                        bot.queue(msg.random([{
+                            type: "text",
+                            text: `${context.confirmed.name}, Sounds great.`
+                        },{
+                            type: "text",
+                            text: `Not bad.`
+                        }]));
+                    }
+
                     return resolve();
                 }
             },
