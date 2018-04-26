@@ -29,11 +29,10 @@ module.exports = class SkillIsDisposable {
             } else {
                 text = `You cannot trash ${context.confirmed.garbage}.`;
             }
-        })
-
-        return bot.reply({
-            type: "text",
-            text: text
+            return bot.reply({
+                type: "text",
+                text: text
+            })
         }).then((response) => {
             return resolve();
         });
