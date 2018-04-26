@@ -4,10 +4,29 @@ const debug = require('debug')('bot-express:service');
 const mecab = require("mecabaas-client");
 const zip_code = require("../service/zip-code");
 const nlu = require("../service/dialogflow");
-const default_lang = "ja";
+const default_lang = "en";
 Promise = require('bluebird');
 
 module.exports = class ServiceParser {
+    static identify(lang, parameter_name, value){
+        debug("Going to identify value by NLU.");
+        if (!lang) lang = default_lang;
+        return nlu.query(lang, value).then((response) => {
+            if (response.status.code != 200){
+                debug(response.status.errorDetails);
+                return Promise.reject(new Error(response.status.errorDetails));
+            }
+
+            if (response.result.parameters[parameter_name] === undefined){
+                debug("Entity not found.");
+                return null;
+            }
+
+            debug("Found entity.");
+            return response.result.parameters[parameter_name];
+        })
+    }
+
     static name(lang, value, resolve, reject){
         if (!lang) lang = default_lang;
         if (!value) return reject();
