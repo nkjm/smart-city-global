@@ -11,9 +11,6 @@ module.exports = class SkillIsDisposable {
                 message_to_confirm: {
                     type: "text",
                     text: "What would you like to confirm?"
-                },
-                parser: (value, bot, event, context, resolve, reject) => {
-                    parse.noun(value, resolve, reject);
                 }
             }
         }
