@@ -162,57 +162,6 @@ module.exports = class SkillGarbageCollection {
         }
 
         this.optional_parameter = {
-            is_city_correct: {
-                message_to_confirm: (bot, event, context, resolve, reject) => {
-                    return resolve({
-                        type: "template",
-                        altText: `Your address would be "${context.confirmed.zip_code.resolved_address}". Is this correct?`,
-                        template: {
-                            type: "confirm",
-                            text: `Your address would be "${context.confirmed.zip_code.resolved_address}". Is this correct?`,
-                            actions: [
-                                {type:"message", label:"Yes", text:"Yes"},
-                                {type:"message", label:"No", text:"No"}
-                            ]
-                        }
-                    });
-                },
-                parser: (value, bot, event, context, resolve, reject) => {
-                    if (value === "") return reject();
-                    if (typeof value != "string") return reject();
-                    parse.by_nlu(context.sender_language, "parse_yes_no", value, resolve, reject);
-                },
-                reaction: (error, value, bot, event, context, resolve, reject) => {
-                    if (error) return resolve();
-
-                    if (value == "Yes"){
-                        // Going to collect remaining street address.
-                        bot.collect("street");
-                    } else if (value == "No"){
-                        bot.collect({
-                            zip_code: {
-                                message_to_confirm: {
-                                    type: "text",
-                                    text: "Ops. Can I ask the address once again?"
-                                }
-                            }
-                        });
-                    }
-                    return resolve();
-                }
-            },
-            street: {
-                message_to_confirm: {
-                    type: "text",
-                    text: "OK. Remaining street please."
-                }
-            },
-            address: {
-                message_to_confirm: {
-                    type: "text",
-                    text: "Do you mind asking address?"
-                }
-            },
             payment: {
                 message_to_confirm: {
                     type: "template",
