@@ -107,7 +107,7 @@ module.exports = class SkillGarbageCollection {
                     }
 
                     if (typeof value === "object"){
-                        if (value.address) return resolve(value);
+                        if (value.address) return resolve(value.address);
                     }
                     return reject();
                 },
