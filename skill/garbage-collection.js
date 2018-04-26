@@ -22,7 +22,7 @@ module.exports = class SkillGarbageCollection {
 
                         bot.change_message_to_confirm("garbage", {
                             type: "text",
-                            text: "Sorry, I couldn't identify the garbage."
+                            text: "Sorry, I couldn't identify the garbage. Can you rephrase it?"
                         })
                         return resolve();
                     }
@@ -70,7 +70,7 @@ module.exports = class SkillGarbageCollection {
             zip_code: {
                 message_to_confirm: {
                     type: "text",
-                    text: "Next, I would like to know where should we go to collect the garbage. Can I have the zip code?"
+                    text: "Next, I would like to know where should we go to pick up the garbage. Can I have your zip code please?"
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
                     parse.zip_code(value, resolve, reject);
@@ -115,10 +115,10 @@ module.exports = class SkillGarbageCollection {
             date: {
                 message_to_confirm: {
                     type: "template",
-                    altText: "When should we go to collect?",
+                    altText: "When do you want us to pick up?",
                     template: {
                         type: "buttons",
-                        text: "When should we go to collect?",
+                        text: "When do you want us to pick up?",
                         actions: [
                             {type: "datetimepicker", label:"Select date", mode:"date", data:"date"}
                         ]
@@ -136,6 +136,11 @@ module.exports = class SkillGarbageCollection {
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
                     if (error) return resolve();
+
+                    bot.queue({
+                        type: "text",
+                        text: `Copy that. We gonna pick up on ${value}`
+                    })
 
                     if (bot.type === "google"){
                         context.confirmed.payment = "Grocery Store";
@@ -200,13 +205,13 @@ module.exports = class SkillGarbageCollection {
             payment: {
                 message_to_confirm: {
                     type: "template",
-                    altText: `How would you like to pay?`,
+                    altText: `How would you like to pay for the fee?`,
                     template: {
                         type: "buttons",
-                        text: `How would you like to pay`,
+                        text: `How would you like to pay for the fee?`,
                         actions: [
                             {type: "message", label: "LINE Pay", text: "LINE Pay"},
-                            {type: "message", label: "Grocery Store", text: "Grocery Store"}
+                            {type: "message", label: "At grocery Store", text: "Grocery Store"}
                         ]
                     }
                 },
@@ -235,7 +240,7 @@ module.exports = class SkillGarbageCollection {
         // Payment should be LINE Pay
         return bot.reply({
             type: "text",
-            text: `All right, we almost finish. Please go ahead to the payment to complete your request.`
+            text: `All right, we almost finish. Please go ahead to the payment and your request will complete once the payment settled.`
         }).then((response) => {
             return line_event.fire({
                 type: "bot-express:push",
@@ -250,7 +255,7 @@ module.exports = class SkillGarbageCollection {
                         amount: 600 * context.confirmed.garbage.length,
                         currency: "JPY",
                         orderId: `${bot.extract_sender_id()}-${Date.now()}`,
-                        message_text: `Pls go to the payment using following button.`
+                        message_text: `LINE Pay`
                     }
                 },
                 language: context.sender_language
