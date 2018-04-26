@@ -64,7 +64,7 @@ module.exports = class SkillGarbageCollection {
                     if (value === "") return reject();
                     if (typeof value != "string") return reject();
 
-                    return resolve();
+                    return resolve(value);
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
                     if (error) return resolve();
