@@ -47,6 +47,36 @@ router.get('/confirm', (req, res, next) => {
         debug("Succeeed to capture payment.");
         res.sendStatus(200);
 
+        debug("Going to send completion sticker to user.");
+        return line_event.fire({
+            type: "bot-express:push",
+            to: {
+                type: "user",
+                userId: reservation.userId
+            },
+            intent: {
+                name: "simple-response",
+                fulfillment: {
+                    messages: [{
+                        type: 4,
+                        payload: {
+                            type: "sticker",
+                            packageId: "2",
+                            stickerId: "144"
+                        }
+                    },{
+                        type: 4,
+                        payload: {
+                            type: "sticker",
+                            packageId: "2",
+                            stickerId: "172"
+                        }
+                    }]
+                }
+            },
+            language: reservation.language
+        });
+    }).then((response) => {
         debug("Going to send completion message to user.");
         return line_event.fire({
             type: "bot-express:push",
@@ -65,10 +95,6 @@ router.get('/confirm', (req, res, next) => {
             },
             language: reservation.language
         });
-    }, (response) => {
-        debug("Failed to capture payment.");
-        debug(response);
-        res.sendStatus(400);
     }).then((response) => {
         debug("Succeed to send message");
     });
