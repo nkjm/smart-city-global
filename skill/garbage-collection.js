@@ -33,20 +33,25 @@ module.exports = class SkillGarbageCollection {
                     }
 
                     let garbages_text = "";
-                    if (typeof value === "object" && value.length){
-                        // There are more than 1 garbage.
-                        let offset = 1;
-                        for (let garbage of value){
-                            garbages_text += garbage;
-                            if (offset === value.length){
-                                break;
-                            }
-                            garbages_text += " and ";
-                            offset++;
-                        }
-                    } else {
+                    if (typeof value === "string"){
                         context.confirmed.garbage = [value];
                         garbages_text = value;
+                    } else if (typeof value === "object"){
+                        if (value.length && value.length === 1){
+                            context.confirmed.garbage = value;
+                            garbages_text = value[0];
+                        } else if (value.length && value.length > 1){
+                            // There are more than 1 garbage.
+                            let offset = 1;
+                            for (let garbage of value){
+                                garbages_text += garbage;
+                                if (offset === value.length){
+                                    break;
+                                }
+                                garbages_text += " and ";
+                                offset++;
+                            }
+                        }
                     }
 
                     bot.queue({
