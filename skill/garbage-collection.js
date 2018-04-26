@@ -16,12 +16,14 @@ module.exports = class SkillGarbageCollection {
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
                     if (value === "") return reject();
-                    if (typeof value != "string") return reject();
+                    if (value === []) return reject();
+
                     parse.by_nlu(context.sender_language, "parse_garbage", value, resolve, reject);
                 },
                 reaction: (error, value, bot, event, context, resolve, reject) => {
                     if (error){
                         if (value === "") return resolve();
+                        if (value === []) return resolve();
 
                         bot.change_message_to_confirm("garbage", {
                             type: "text",
