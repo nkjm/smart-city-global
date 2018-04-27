@@ -96,8 +96,15 @@ module.exports = class SkillGarbageCollection {
             },
             address: {
                 message_to_confirm: {
-                    type: "text",
-                    text: "Next, I would like to know where should we go to pick up the garbage."
+                    type: "template",
+                    altText: "Next, I would like to know where should we go to pick up the garbage.",
+                    template: {
+                        type: "buttons",
+                        text: "Next, I would like to know where should we go to pick up the garbage.",
+                        actions: [
+                            {type:"uri", label:"Current location", uri:"line://nv/location"}
+                        ]
+                    }
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
                     if (value === "") return reject();
