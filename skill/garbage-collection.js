@@ -15,8 +15,8 @@ module.exports = class SkillGarbageCollection {
                     text: `Sure. Could you tell me what you like to dispose?`
                 },
                 parser: (value, bot, event, context, resolve, reject) => {
+                    if (typeof value != "string") return reject();
                     if (value === "") return reject();
-                    if (value === []) return reject();
 
                     parse.by_nlu(context.sender_language, "parse_garbage", value, resolve, reject);
                 },
@@ -84,10 +84,10 @@ module.exports = class SkillGarbageCollection {
                     } else {
                         bot.queue(msg.random([{
                             type: "text",
-                            text: `${context.confirmed.name}, Sounds great.`
+                            text: `${context.confirmed.name}, sounds great.`
                         },{
                             type: "text",
-                            text: `Hum. Not bad.`
+                            text: `${context.confirmed.name}, not bad.`
                         }]));
                     }
 
